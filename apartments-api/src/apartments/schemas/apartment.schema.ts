@@ -24,6 +24,9 @@ export class Apartment {
     @Prop({ required: true, min: 0 })
     price: number;
 
+    @Prop({ required: true })
+    address: string;
+
     @Prop({ type: [String], default: [] })
     images: string[];
 

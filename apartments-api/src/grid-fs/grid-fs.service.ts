@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import { GridFSBucket } from 'mongodb';
-import { Connection } from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 
 @Injectable()
 export class GridFsService {
-    private bucket: GridFSBucket;
+    private bucket: mongoose.mongo.GridFSBucket;
 
-    constructor(@InjectConnection() private conn: Connection) {
-        this.bucket = new GridFSBucket(this.conn.db as any, {
+    constructor(@InjectConnection() private readonly conn: Connection) {
+        this.bucket = new mongoose.mongo.GridFSBucket(this.conn.db as any, {
             bucketName: 'uploads',
         });
     }

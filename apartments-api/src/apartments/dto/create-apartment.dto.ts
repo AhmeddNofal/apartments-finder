@@ -25,6 +25,10 @@ export class CreateApartmentDto {
   @Min(0)
   price: number;
 
+  @IsString()
+  @MinLength(1)
+  address: string;
+
   @IsArray()
   @IsOptional()
   images?: string[];
