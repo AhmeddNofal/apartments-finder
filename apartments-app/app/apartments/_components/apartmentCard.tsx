@@ -49,9 +49,6 @@ export default function ApartmentCard({ apartment }: { apartment: Apartment }) {
                         {apartment.unitName}
                     </Typography>
 
-                    <Typography variant="body2" color="gray">
-                        {apartment.description}
-                    </Typography>
                 </Box>
 
                 <Box style={{ display: "flex", gap: 8 }}>
