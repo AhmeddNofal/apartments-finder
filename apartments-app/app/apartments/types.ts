@@ -1,15 +1,25 @@
 export interface Apartment {
-  id: number;
-  title: string;
-  price: number;
-  sqft: number;
-  beds: number;
-  baths: number;
-  location: string;
-  image: string;
-  description: string;
+    _id: string;
+    unitName: string;
+    unitNo: number;
+    bedrooms: number;
+    baths: number;
+    unitArea: number;
+    price: number;
+    address: string;
+    description: string;
+    images?: string[];
+    location?: string;
 }
 
+
+export interface ApartmentsResponse {
+  data: Apartment[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
 
 export interface ApartmentListProps {
   onNavigate: (id: number) => void;
@@ -18,12 +28,9 @@ export interface ApartmentListProps {
 
 export interface ApartmentCardProps {
     apartment: Apartment;
-    // onNavigate: (id: number) => void;
 }
 
 
 export interface ApartmentDetailsProps {
-  // Apartment is optional because the details page might be shown before data is loaded
   apartment: Apartment | undefined;
-//   onNavigate: (target: ViewType) => void;
 }

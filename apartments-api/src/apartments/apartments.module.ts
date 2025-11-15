@@ -4,12 +4,14 @@ import { ApartmentsController } from './apartments.controller';
 import { ApartmentsService } from './apartments.service';
 import { GridFsService } from 'src/grid-fs/grid-fs.service';
 import { Apartment, ApartmentSchema } from './schemas/apartment.schema';
+import { GridFsModule } from 'src/grid-fs/grid-fs.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Apartment.name, schema: ApartmentSchema }])
+    MongooseModule.forFeature([{ name: Apartment.name, schema: ApartmentSchema }]),
+    GridFsModule
   ],
   controllers: [ApartmentsController],
   providers: [ApartmentsService, GridFsService]
 })
-export class ApartmentsModule {}
+export class ApartmentsModule { }

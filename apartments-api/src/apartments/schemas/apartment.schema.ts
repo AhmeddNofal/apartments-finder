@@ -19,13 +19,16 @@ export class Apartment {
     baths: number;
 
     @Prop({ required: true, min: 0 })
-    unitArea: number; // in square meters
+    unitArea: number; 
 
     @Prop({ required: true, min: 0 })
     price: number;
 
     @Prop({ required: true })
     address: string;
+
+    @Prop({ required: true })
+    description: string;
 
     @Prop({ type: [String], default: [] })
     images: string[];

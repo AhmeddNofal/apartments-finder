@@ -1,53 +1,98 @@
-'use client';
+"use client";
 
-import appTheme from "@/theme";
-import { Typography, Box, useMediaQuery, Container, Grid } from "@mui/material";
-import FilterSidebar from "./_components/filterSiderbar";
-import ApartmentCard from "./_components/apartmentCard";
-import { Apartment, ApartmentListProps } from "./types";
+import { useEffect, useState } from "react";
+import { Typography, Box, Container, CircularProgress, Alert } from "@mui/material";
 import Link from "next/link";
+import FilterSidebar from "./_components/filterSidebar";
+import ApartmentCard from "./_components/apartmentCard";
+import { Apartment } from "./types";
 
+export default function ApartmentList() {
+  const [filters, setFilters] = useState({});
+  const [apartments, setApartments] = useState<Apartment[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-const MOCK_APARTMENTS: Apartment[] = [
-    { id: 1, title: 'Luxury Downtown Loft', price: 3200, sqft: 1050, beds: 2, baths: 2, location: 'Financial District', image: 'https://placehold.co/800x600/4f46e5/ffffff?font=inter&text=Loft+View', description: 'Stunning city views, close to transit.' },
-    { id: 2, title: 'Sunny Family Home', price: 1800, sqft: 850, beds: 2, baths: 1, location: 'Suburban Park', image: 'https://placehold.co/800x600/6366f1/ffffff?font=inter&text=Family+Home', description: 'Quiet neighborhood, pool access, great schools.' },
-    { id: 3, title: 'Studio near University', price: 1250, sqft: 500, beds: 1, baths: 1, location: 'Campus West', image: 'https://placehold.co/800x600/4338ca/ffffff?font=inter&text=Studio+Space', description: 'Perfect for students, all utilities included.' },
-    { id: 4, title: 'Modern 3BR Penthouse', price: 4500, sqft: 1500, beds: 3, baths: 3, location: 'Central Heights', image: 'https://placehold.co/800x600/818cf8/ffffff?font=inter&text=Penthouse', description: 'Spacious and elegant living with rooftop access.' },
-];
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
+  const fetchApartments = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-export default function ApartmentList({ onNavigate }: ApartmentListProps) {
-    const isMobile = useMediaQuery(appTheme.breakpoints.down('md'));
+      const query = new URLSearchParams();
+      Object.entries(filters).forEach(([k, v]) => {
+        if (v !== "" && v !== undefined) query.append(k, v as string);
+      });
 
-    return (
-        <Container maxWidth="lg" sx={{ pt: 4, pb: 8 }}>
-            <Typography variant="h4" fontWeight="bold" sx={{ color: 'text.primary', mb: 1 }}>
-                Available Listings
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                Showing {MOCK_APARTMENTS.length} results in your selected areas.
-            </Typography>
+      const res = await fetch(`${baseUrl}/apartments?${query.toString()}`);
 
-            <Grid container spacing={4}>
-                {/* Filter Sidebar (Hidden on mobile) */}
-                {!isMobile && (
-                    <Grid size={3} component="aside">
-                        <FilterSidebar />
-                    </Grid>
-                )}
+      if (!res.ok) {
+        throw new Error(`API returned ${res.status}`);
+      }
 
-                {/* Listings Area */}
-                <Grid size={{ xs: 12, md: 9 }} >
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                        {MOCK_APARTMENTS.map((apartment: Apartment) => (
-                            <Link key={apartment.id} href={`/apartments/${apartment.id}`} style={{ textDecoration: 'none' }}>
-                                <ApartmentCard key={apartment.id} apartment={apartment} />
-                            </Link>
-                        ))}
-                    </Box>
-                </Grid>
-            </Grid>
-        </Container>
-    );
-};
+      const json = await res.json();
 
+      if (!json.data) {
+        throw new Error("Invalid API response format");
+      }
+
+      setApartments(json.data);
+    } catch (err: any) {
+      console.error("Fetch error:", err);
+      setError(err.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApartments();
+  }, [filters]);
+
+  return (
+    <Container maxWidth="lg" style={{ paddingTop: 40, paddingBottom: 80 }}>
+      <Typography variant="h4" fontWeight="bold">
+        Available Listings
+      </Typography>
+
+      <Box style={{ display: "flex", marginTop: 30, gap: 30 }}>
+        {/* Sidebar */}
+        <Box style={{ width: 300, flexShrink: 0 }}>
+          <FilterSidebar onFilterChange={setFilters} />
+        </Box>
+
+        {/* Right Section */}
+        <Box style={{ display: "flex", flexDirection: "column", gap: 20, flexGrow: 1 }}>
+          {/* Loading */}
+          {loading && (
+            <Box style={{ display: "flex", justifyContent: "center", marginTop: 40 }}>
+              <CircularProgress />
+            </Box>
+          )}
+
+          {/* Error */}
+          {!loading && error && <Alert severity="error">{error}</Alert>}
+
+          {/* No Results */}
+          {!loading && !error && apartments.length === 0 && (
+            <Alert severity="info">No apartments found matching your filters.</Alert>
+          )}
+
+          {/* Listings */}
+          {!loading &&
+            !error &&
+            apartments.map((apt) => (
+              <Link
+                key={apt._id}
+                href={`/apartments/${apt._id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <ApartmentCard apartment={apt} />
+              </Link>
+            ))}
+        </Box>
+      </Box>
+    </Container>
+  );
+}

@@ -3,10 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ApartmentsModule } from './apartments/apartments.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { GridFsModule } from './grid-fs/grid-fs.module';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost/apartments'), ApartmentsModule, GridFsModule],
+  imports: [MongooseModule.forRoot('mongodb://localhost/apartments'), ApartmentsModule],
   controllers: [AppController],
   providers: [AppService],
 })

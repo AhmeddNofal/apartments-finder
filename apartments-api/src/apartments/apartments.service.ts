@@ -33,7 +33,6 @@ export class ApartmentsService {
             });
 
             uploadStream.on('error', (err) => {
-                console.error('File upload error:', err);
                 reject(new InternalServerErrorException(err));
             });
         });
@@ -165,7 +164,7 @@ export class ApartmentsService {
 
     async remove(id: string): Promise<{ message: string }> {
         const apartment = await this.apartmentModel.findByIdAndDelete(id).exec();
-        
+
         if (!apartment) {
             throw new NotFoundException(`Apartment with ID ${id} not found`);
         }

@@ -26,13 +26,12 @@ import {
   ApiConsumes,
   ApiBody,
   ApiParam,
-  ApiQuery,
 } from '@nestjs/swagger';
 
 @ApiTags('apartments')
 @Controller('apartments')
 export class ApartmentsController {
-  constructor(private readonly apartmentsService: ApartmentsService) {}
+  constructor(private readonly apartmentsService: ApartmentsService) { }
 
   // CREATE
   @Post()
@@ -52,6 +51,7 @@ export class ApartmentsController {
         unitArea: { type: 'number' },
         price: { type: 'number' },
         address: { type: 'string' },
+        description: { type: 'string' },
         images: { type: 'array', items: { type: 'string' }, nullable: true },
         file: { type: 'string', format: 'binary', nullable: true },
       },
@@ -70,6 +70,7 @@ export class ApartmentsController {
         unitArea: 120,
         price: 250000,
         address: '12 Nile Street, Cairo',
+        description: 'A beautiful apartment with a view of the sea.',
         images: ['655a9c1234567890abcdef34'],
       },
     },
@@ -84,7 +85,6 @@ export class ApartmentsController {
   // FIND ALL
   @Get()
   @ApiOperation({ summary: 'Get all apartments with filters/pagination' })
-  @ApiQuery({ type: QueryApartmentDto })
   @ApiResponse({
     status: 200,
     description: 'List of apartments with pagination info.',
@@ -100,6 +100,7 @@ export class ApartmentsController {
             unitArea: 120,
             price: 250000,
             address: '12 Nile Street, Cairo',
+            description: 'A beautiful apartment with a view of the sea.',
             images: ['655a9c1234567890abcdef34'],
           },
         ],
@@ -131,6 +132,7 @@ export class ApartmentsController {
         unitArea: 120,
         price: 250000,
         address: '12 Nile Street, Cairo',
+        description: 'A beautiful apartment with a view of the sea.',
         images: ['655a9c1234567890abcdef34'],
       },
     },
@@ -187,6 +189,7 @@ export class ApartmentsController {
         unitArea: 140,
         price: 300000,
         address: '12 Nile Street, Cairo',
+        description: 'A beautiful apartment with a view of the sea.',
         images: ['655a9c1234567890abcdef34', '655b9c1234567890abcdef35'],
       },
     },

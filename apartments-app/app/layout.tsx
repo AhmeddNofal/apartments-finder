@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ThemeProviders from "./themeProviders";
 import AppHeader from "./_components/common/appHeader";
+import { Box } from "@mui/material";
 
 export const metadata: Metadata = {
   title: "Apartments App",
@@ -18,7 +19,7 @@ export default function RootLayout({
       <body >
         <ThemeProviders>
           <AppHeader />
-          {children}
+            {children}
         </ThemeProviders>
       </body>
     </html>
