@@ -101,8 +101,6 @@ export class ApartmentsController {
             price: 250000,
             address: '12 Nile Street, Cairo',
             images: ['655a9c1234567890abcdef34'],
-            createdAt: '2025-11-15T12:00:00.000Z',
-            updatedAt: '2025-11-15T12:00:00.000Z',
           },
         ],
         total: 1,
@@ -134,8 +132,6 @@ export class ApartmentsController {
         price: 250000,
         address: '12 Nile Street, Cairo',
         images: ['655a9c1234567890abcdef34'],
-        createdAt: '2025-11-15T12:00:00.000Z',
-        updatedAt: '2025-11-15T12:00:00.000Z',
       },
     },
   })
@@ -192,8 +188,6 @@ export class ApartmentsController {
         price: 300000,
         address: '12 Nile Street, Cairo',
         images: ['655a9c1234567890abcdef34', '655b9c1234567890abcdef35'],
-        createdAt: '2025-11-15T12:00:00.000Z',
-        updatedAt: '2025-11-16T12:00:00.000Z',
       },
     },
   })
