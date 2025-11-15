@@ -23,7 +23,7 @@ export default function Home() {
 
       {/* Footer */}
       <Box component="footer" sx={{ mt: 6, fontSize: '0.875rem', color: appTheme.palette.grey[400] }}>
-        Trusted by renters in over 50 cities globally.
+        Trusted globally.
       </Box>
     </Box>
   );

@@ -6,6 +6,7 @@ import {
     Box,
     Grid,
     Divider,
+    Chip,
 } from "@mui/material";
 
 import BedIcon from "@mui/icons-material/Bed";
@@ -36,7 +37,7 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
             : ["/placeholder.png"]
 
     return (
-        <Container maxWidth="lg" sx={{ py: 6,  }}>
+        <Container maxWidth="lg" sx={{ py: 6, }}>
             <Link href="/apartments" style={{ textDecoration: "none" }}>
                 <Button
                     variant="text"
@@ -84,18 +85,16 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
                         </Grid>
 
                         {/* Right Column */}
-                        <Grid size={{ xs: 12, md: 4 }}>
+                        <Grid size={{ xs: 12, md: 4 }} >
                             <Paper
                                 variant="outlined"
-                                sx={{ p: 3, borderRadius: 3, bgcolor: "background.default" }}
+                                sx={{ p: 3, borderRadius: 3, bgcolor: "background.default" , display: 'flex', flexDirection: 'column', alignItems: 'center', }}
                             >
-                                <Typography variant="h4" color="primary" fontWeight="bold">
+                                <Typography variant="h4" color="primary" fontWeight="bold" textAlign="center">
                                     ${apartment.price}
                                 </Typography>
-                                <Divider sx={{ my: 3 }} />
-                                <Typography variant="body2" color="text.secondary" textAlign="center">
-                                    Listing ID: {apartment._id}
-                                </Typography>
+                                 <Divider sx={{ my: 2, width: "80%", borderColor: "grey.400" }} />
+                               <Chip label="Available Now" color="primary" sx={{color: "white"}} />
                             </Paper>
                         </Grid>
                     </Grid>
