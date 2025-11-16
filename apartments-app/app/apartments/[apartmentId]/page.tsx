@@ -7,6 +7,7 @@ import {
     Grid,
     Divider,
     Chip,
+    Alert,
 } from "@mui/material";
 
 import BedIcon from "@mui/icons-material/Bed";
@@ -21,18 +22,39 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
     const { apartmentId } = await params;
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-    const res = await fetch(`${baseUrl}/apartments/${apartmentId}`);
+    let apartment: Apartment | null = null;
+    let errorMessage = '';
 
-    if (!res.ok) {
-        return <Typography sx={{ p: 4 }}>Apartment not found.</Typography>;
+    try {
+        const res = await fetch(`${baseUrl}/apartments/${apartmentId}`);
+
+        if (!res.ok) {
+            errorMessage = `Apartment not found (status: ${res.status})`;
+        } else {
+            apartment = await res.json();
+        }
+    } catch (err: any) {
+        console.error(err);
+        errorMessage = 'Failed to fetch apartment data. Please try again later.';
     }
 
-    const apartment: Apartment = await res.json();
+    if (errorMessage) {
+        return (
+            <Container maxWidth="lg" sx={{ py: 6 }}>
+                <Alert severity="error">{errorMessage}</Alert>
+                <Link href="/apartments" style={{ textDecoration: "none" }}>
+                    <Button variant="text" color="primary" sx={{ mt: 3 }}>
+                        &larr; Back to Listings
+                    </Button>
+                </Link>
+            </Container>
+        );
+    }
 
     const images =
-        apartment.images?.length
-            ? apartment.images.map(id => `${baseUrl}/apartments/file/${id}`)
-            : ["/placeholder.png"]
+        apartment!.images?.length
+            ? apartment!.images.map(id => `${baseUrl}/apartments/file/${id}`)
+            : ["/placeholder.png"];
 
     return (
         <Container maxWidth="lg" sx={{ py: 6 }} className="fade-in">
@@ -48,7 +70,6 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
             </Link>
 
             <Paper elevation={8} sx={{ borderRadius: 4, overflow: "hidden" }} className="fade-in">
-                {/* Hero Image */}
                 <div className="fade-in">
                     <ImageCarousel images={images} />
                 </div>
@@ -59,34 +80,25 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
                         {/* LEFT COLUMN */}
                         <Grid size={{ xs: 12, md: 8 }} className="fade-in-up">
                             <Typography variant="h3" component="h1" fontWeight="bold" sx={{ mb: 1 }}>
-                                {apartment.unitName}
+                                {apartment!.unitName}
                             </Typography>
 
-                            {/* Address */}
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
                                 <LocationOnIcon sx={{ color: "primary.main", fontSize: 22 }} />
                                 <Typography variant="body1" color="text.secondary">
-                                    {apartment.address}
+                                    {apartment!.address}
                                 </Typography>
                             </Box>
 
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    gap: 3,
-                                    mb: 4,
-                                    pt: 1,
-                                    color: "text.secondary",
-                                }}
-                            >
+                            <Box sx={{ display: "flex", gap: 3, mb: 4, pt: 1, color: "text.secondary" }}>
                                 <Box display="flex" alignItems="center">
-                                    <BedIcon sx={{ mr: 0.5 }} /> {apartment.bedrooms} Beds
+                                    <BedIcon sx={{ mr: 0.5 }} /> {apartment!.bedrooms} Beds
                                 </Box>
                                 <Box display="flex" alignItems="center">
-                                    <ShowerIcon sx={{ mr: 0.5 }} /> {apartment.baths} Baths
+                                    <ShowerIcon sx={{ mr: 0.5 }} /> {apartment!.baths} Baths
                                 </Box>
                                 <Box display="flex" alignItems="center">
-                                    <SquareFootIcon sx={{ mr: 0.5 }} /> {apartment.unitArea} sqft
+                                    <SquareFootIcon sx={{ mr: 0.5 }} /> {apartment!.unitArea} sqft
                                 </Box>
                             </Box>
 
@@ -97,7 +109,7 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
                             </Typography>
 
                             <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                                {apartment.description}
+                                {apartment!.description}
                             </Typography>
                         </Grid>
 
@@ -115,7 +127,7 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
                                 }}
                             >
                                 <Typography variant="h4" color="primary" fontWeight="bold" textAlign="center">
-                                    ${apartment.price}
+                                    ${apartment!.price}
                                 </Typography>
 
                                 <Divider sx={{ my: 2, width: "80%", borderColor: "grey.400" }} />

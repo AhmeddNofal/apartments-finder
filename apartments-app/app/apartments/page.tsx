@@ -6,6 +6,7 @@ import {
     Box,
     Container,
     Alert,
+    Button,
 } from "@mui/material";
 import Link from "next/link";
 import FilterSidebar from "./_components/filterSidebar";
@@ -52,7 +53,9 @@ export default function ApartmentList() {
 
             setHasMore(json.data.length === 10);
         } catch (err: any) {
-            setError(err.message || "Unexpected error");
+            console.error(err);
+            setError(err.message || "Unexpected error occurred while fetching apartments.");
+            setHasMore(false);
         } finally {
             setLoading(false);
         }
@@ -84,61 +87,37 @@ export default function ApartmentList() {
 
     return (
         <Container maxWidth="lg" sx={{ pt: 5, pb: 10 }}>
-
             {/* Title */}
-            <Typography
-                variant="h4"
-                fontWeight="bold"
-                className="fade-in-up"
-            >
+            <Typography variant="h4" fontWeight="bold" className="fade-in-up">
                 Available Listings
             </Typography>
 
-            <Box
-                sx={{
-                    display: "flex",
-                    gap: 3,
-                    mt: 4,
-                    flexDirection: { xs: "column", sm: "column", md: "row" },
-                }}
-            >
+            <Box sx={{ display: "flex", gap: 3, mt: 4, flexDirection: { xs: "column", md: "row" } }}>
                 {/* Sidebar */}
-                <Box
-                    className="fade-in-left"
-                    sx={{
-                        width: { xs: "100%", md: 400 },
-                        flexShrink: 0,
-                    }}
-                >
+                <Box className="fade-in-left" sx={{ width: { xs: "100%", md: 400 }, flexShrink: 0 }}>
                     <FilterSidebar onFilterChange={setFilters} />
                 </Box>
 
                 {/* Listings */}
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 2,
-                        flexGrow: 1,
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        height: { xs: "auto", md: "100vh" },
-                        p: 1,
-                    }}
-                >
-                    {!loading && error && <Alert severity="error" className="fade-in">{error}</Alert>}
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flexGrow: 1, overflowY: "auto", overflowX: "hidden", height: { xs: "auto", md: "100vh" }, p: 1 }}>
+                    {/* Error */}
+                    {error && (
+                        <Alert severity="error" className="fade-in" sx={{ mb: 2 }}>
+                            {error}{" "}
+                            <Button size="small" onClick={() => fetchApartments(page)}>
+                                Retry
+                            </Button>
+                        </Alert>
+                    )}
 
+                    {/* No results */}
                     {!loading && !error && apartments.length === 0 && (
                         <Alert severity="info" className="fade-in">No apartments found.</Alert>
                     )}
 
                     {/* Cards */}
                     {apartments.map((apt) => (
-                        <Link
-                            key={apt._id}
-                            href={`/apartments/${apt._id}`}
-                            style={{ textDecoration: "none" }}
-                        >
+                        <Link key={apt._id} href={`/apartments/${apt._id}`} style={{ textDecoration: "none" }}>
                             <div className="fade-in-up" style={{ animationDelay: "0.05s" }}>
                                 <ApartmentCard apartment={apt} />
                             </div>
