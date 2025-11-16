@@ -1,4 +1,4 @@
-# Apartments Finder (monorepo)
+# Apartments Finder
 
 A concise repo-level overview and quickstart for the Apartments Finder project. This repository contains two main sub-projects:
 
@@ -106,34 +106,6 @@ See `apartments-api/README.md` for additional examples and API details.
 
 ---
 
-## Useful commands
-
-From repository root (PowerShell):
-
-```powershell
-# Build & start in background
-docker compose up --build -d
-
-# Show running containers
-docker ps
-
-# Stop and remove containers (but keep volumes)
-docker compose down
-
-# Remove containers and volumes
-docker compose down -v
-
-# View logs
-docker compose logs -f
-
-# Rebuild one service (example: backend)
-docker compose build backend
-docker compose up -d backend
-```
-
-If you prefer the legacy binary, replace `docker compose` with `docker-compose`.
-
----
 
 
 ## Where to find more documentation
