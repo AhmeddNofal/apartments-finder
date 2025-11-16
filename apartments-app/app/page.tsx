@@ -27,7 +27,7 @@ export default function Home() {
         component="footer" 
         sx={{ mt: 6, fontSize: '0.875rem', color: appTheme.palette.grey[400] }} 
         className="fade-in"
-        style={{ animationDelay: '0.3s' }} // optional slight delay
+        style={{ animationDelay: '0.3s' }} 
       >
         Trusted globally.
       </Box>

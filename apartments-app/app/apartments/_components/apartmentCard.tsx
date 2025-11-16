@@ -6,6 +6,9 @@ import { Apartment } from "../types";
 
 export default function ApartmentCard({ apartment }: { apartment: Apartment }) {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const imageUrl = apartment.images?.[0]
+        ? `${baseUrl}/apartments/file/${apartment.images[0]}`
+        : '/placeholder.png';
 
     return (
         <Paper
@@ -24,7 +27,7 @@ export default function ApartmentCard({ apartment }: { apartment: Apartment }) {
             <Box
                 style={{
                     width: 250,
-                    backgroundImage: `url(${baseUrl}/apartments/file/${apartment.images?.[0]})`,
+                    backgroundImage: `url(${imageUrl})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}

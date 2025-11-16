@@ -30,7 +30,7 @@ export default function ImageCarousel({ images }: Props) {
     >
       <Box
         component="img"
-        src={images[index]}
+        src={images[index] }
         alt="apartment image"
         sx={{
           width: "100%",

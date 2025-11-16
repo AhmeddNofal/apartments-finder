@@ -156,27 +156,46 @@ export class ApartmentsService {
         return apartment;
     }
 
-    async update(id: string, updateApartmentDto: UpdateApartmentDto, files?: Express.Multer.File[]): Promise<ApartmentDocument> {
-        const updateData = { ...updateApartmentDto };
+    async update(
+        id: string,
+        updateApartmentDto: UpdateApartmentDto,
+        files?: Express.Multer.File[]
+    ): Promise<ApartmentDocument> {
+        // Fetch current apartment
+        const apartment = await this.apartmentModel.findById(id).exec();
+        if (!apartment) throw new NotFoundException(`Apartment with ID ${id} not found`);
 
-        // If file is provided, upload it and add fileId to images array
+        // Upload new files
+        let newImages: string[] = [];
         if (files && files.length > 0) {
-            const uploaded = await this.uploadFiles(files);
-            updateData.images = updateData.images
-                ? [...updateData.images, ...uploaded]
-                : uploaded;
+            newImages = await this.uploadFiles(files);
         }
 
-        const apartment = await this.apartmentModel.findByIdAndUpdate(
+        // Merge old and new images
+        const updatedImages = apartment.images ? [...apartment.images, ...newImages] : newImages;
+
+        // Merge DTO and updated images
+        const updatedData = {
+            ...updateApartmentDto,
+            images: updatedImages,
+        };
+
+        // Update in DB
+        const updatedApartment = await this.apartmentModel.findByIdAndUpdate(
             id,
-            updateData,
+            updatedData,
             { new: true, runValidators: true }
         ).exec();
-        if (!apartment) {
+
+        if (!updatedApartment) {
+            // TypeScript now knows this can't be null
             throw new NotFoundException(`Apartment with ID ${id} not found`);
         }
-        return apartment;
+
+        return updatedApartment;
     }
+
+
 
     async remove(id: string): Promise<{ message: string }> {
         const apartment = await this.apartmentModel.findByIdAndDelete(id).exec();

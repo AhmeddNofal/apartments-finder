@@ -182,6 +182,26 @@ export class ApartmentsController {
   @UseInterceptors(FilesInterceptor('files'))
   @ApiOperation({ summary: 'Update an existing apartment' })
   @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Apartment data + optional image upload',
+    schema: {
+      type: 'object',
+      properties: {
+        unitName: { type: 'string' },
+        unitNo: { type: 'number' },
+        bedrooms: { type: 'number' },
+        baths: { type: 'number' },
+        unitArea: { type: 'number' },
+        price: { type: 'number' },
+        address: { type: 'string' },
+        description: { type: 'string' },
+        files: {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+        },
+      },
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'Apartment updated successfully.',
@@ -214,7 +234,7 @@ export class ApartmentsController {
   async update(
     @Param('id') id: string,
     @Body() updateApartmentDto: UpdateApartmentDto,
-    @UploadedFile() files?: Express.Multer.File[],
+    @UploadedFiles() files?: Express.Multer.File[],
   ) {
     return this.apartmentsService.update(id, updateApartmentDto, files);
   }
