@@ -12,8 +12,9 @@ import {
   UploadedFile,
   Query,
   Res,
+  UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApartmentsService } from './apartments.service';
 import { CreateApartmentDto } from './dto/create-apartment.dto';
 import { UpdateApartmentDto } from './dto/update-apartment.dto';
@@ -36,7 +37,7 @@ export class ApartmentsController {
   // CREATE
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('files'))
   @ApiOperation({ summary: 'Create a new apartment' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -52,8 +53,13 @@ export class ApartmentsController {
         price: { type: 'number' },
         address: { type: 'string' },
         description: { type: 'string' },
-        images: { type: 'array', items: { type: 'string' }, nullable: true },
-        file: { type: 'string', format: 'binary', nullable: true },
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        }
       },
     },
   })
@@ -77,9 +83,9 @@ export class ApartmentsController {
   })
   async create(
     @Body() createApartmentDto: CreateApartmentDto,
-    @UploadedFile() file?: Express.Multer.File,
+    @UploadedFiles() files?: Express.Multer.File[],
   ) {
-    return this.apartmentsService.create(createApartmentDto, file);
+    return this.apartmentsService.create(createApartmentDto, files);
   }
 
   // FIND ALL
@@ -173,7 +179,7 @@ export class ApartmentsController {
 
   // UPDATE
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('files'))
   @ApiOperation({ summary: 'Update an existing apartment' })
   @ApiConsumes('multipart/form-data')
   @ApiResponse({
@@ -208,9 +214,9 @@ export class ApartmentsController {
   async update(
     @Param('id') id: string,
     @Body() updateApartmentDto: UpdateApartmentDto,
-    @UploadedFile() file?: Express.Multer.File,
+    @UploadedFile() files?: Express.Multer.File[],
   ) {
-    return this.apartmentsService.update(id, updateApartmentDto, file);
+    return this.apartmentsService.update(id, updateApartmentDto, files);
   }
 
   // DELETE

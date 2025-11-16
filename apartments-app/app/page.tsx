@@ -9,7 +9,7 @@ export default function Home() {
     <Box
       sx={{
         minHeight: '100vh',
-        backgroundColor: appTheme.palette.background?.default ?? appTheme.palette.grey[50], // bg-gray-50 via theme
+        backgroundColor: appTheme.palette.background?.default ?? appTheme.palette.grey[50],
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -17,12 +17,18 @@ export default function Home() {
         fontFamily: appTheme.typography?.fontFamily ?? 'Inter, sans-serif'
       }}
     >
-
       {/* Main Content Paper (Card) */}
-      <LandingPageCard />
+      <Box className="fade-in-up">
+        <LandingPageCard />
+      </Box>
 
       {/* Footer */}
-      <Box component="footer" sx={{ mt: 6, fontSize: '0.875rem', color: appTheme.palette.grey[400] }}>
+      <Box 
+        component="footer" 
+        sx={{ mt: 6, fontSize: '0.875rem', color: appTheme.palette.grey[400] }} 
+        className="fade-in"
+        style={{ animationDelay: '0.3s' }} // optional slight delay
+      >
         Trusted globally.
       </Box>
     </Box>

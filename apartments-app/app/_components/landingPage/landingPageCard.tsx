@@ -60,7 +60,7 @@ export default function LandingPageCard() {
                     }}
                 >
                     Explore curated, modern listings of available apartments in top neighborhoods.
-                    We make finding your next rental seamless and stress-free.
+                    We make finding your next investment seamless and stress-free.
                 </Typography>
 
                 {/* Call-to-Action Button */}

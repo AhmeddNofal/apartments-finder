@@ -38,6 +38,20 @@ export class ApartmentsService {
         });
     }
 
+    async uploadFiles(files: Express.Multer.File[]): Promise<string[]> {
+        if (!files || files.length === 0) return [];
+
+        const ids: string[] = [];
+
+        for (const file of files) {
+            const { fileId } = await this.uploadFile(file);
+            ids.push(fileId.toString());
+        }
+
+        return ids;
+    }
+
+
     downloadFile(fileId: string, res: Response) {
         let stream;
         try {
@@ -54,14 +68,14 @@ export class ApartmentsService {
         stream.pipe(res);
     }
 
-    // CRUD Methods
-    async create(createApartmentDto: CreateApartmentDto, file?: Express.Multer.File): Promise<ApartmentDocument> {
+
+    async create(createApartmentDto: CreateApartmentDto, files?: Express.Multer.File[]): Promise<ApartmentDocument> {
         const apartmentData = { ...createApartmentDto };
         try {
-            // If file is provided, upload it and add fileId to images array
-            if (file) {
-                const { fileId }: { fileId: Types.ObjectId } = await this.uploadFile(file);
-                apartmentData.images = [fileId.toString()];
+
+            if (files && files.length > 0) {
+                const uploadedImageIds = await this.uploadFiles(files);
+                apartmentData.images = uploadedImageIds;
             }
 
             const apartment = new this.apartmentModel(apartmentData);
@@ -142,13 +156,15 @@ export class ApartmentsService {
         return apartment;
     }
 
-    async update(id: string, updateApartmentDto: UpdateApartmentDto, file?: Express.Multer.File): Promise<ApartmentDocument> {
+    async update(id: string, updateApartmentDto: UpdateApartmentDto, files?: Express.Multer.File[]): Promise<ApartmentDocument> {
         const updateData = { ...updateApartmentDto };
 
         // If file is provided, upload it and add fileId to images array
-        if (file) {
-            const { fileId } = await this.uploadFile(file);
-            updateData.images = updateData.images ? [...updateData.images, fileId.toString()] : [fileId.toString()];
+        if (files && files.length > 0) {
+            const uploaded = await this.uploadFiles(files);
+            updateData.images = updateData.images
+                ? [...updateData.images, ...uploaded]
+                : uploaded;
         }
 
         const apartment = await this.apartmentModel.findByIdAndUpdate(
@@ -168,7 +184,7 @@ export class ApartmentsService {
         if (!apartment) {
             throw new NotFoundException(`Apartment with ID ${id} not found`);
         }
- 
+
         return { message: `Apartment with ID ${id} deleted successfully` };
     }
 }

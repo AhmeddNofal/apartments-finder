@@ -17,7 +17,6 @@ import { Apartment } from "../types";
 import ImageCarousel from "../_components/imageCarousel";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
-
 export default async function ApartmentDetails({ params }: { params: Promise<{ apartmentId: string }> }) {
     const { apartmentId } = await params;
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -36,25 +35,29 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
             : ["/placeholder.png"]
 
     return (
-        <Container maxWidth="lg" sx={{ py: 6, }}>
+        <Container maxWidth="lg" sx={{ py: 6 }} className="fade-in">
             <Link href="/apartments" style={{ textDecoration: "none" }}>
                 <Button
                     variant="text"
                     color="primary"
                     sx={{ mb: 3, textTransform: "none", fontWeight: "bold" }}
+                    className="fade-in-left"
                 >
                     &larr; Back to Listings
                 </Button>
             </Link>
 
-            <Paper elevation={8} sx={{ borderRadius: 4, overflow: "hidden" }}>
+            <Paper elevation={8} sx={{ borderRadius: 4, overflow: "hidden" }} className="fade-in">
                 {/* Hero Image */}
-                <ImageCarousel images={images} />
+                <div className="fade-in">
+                    <ImageCarousel images={images} />
+                </div>
 
                 <Box sx={{ p: { xs: 3, md: 6 } }}>
                     <Grid container spacing={4}>
-                        {/* Left Column */}
-                        <Grid size={{ xs: 12, md: 8 }}>
+
+                        {/* LEFT COLUMN */}
+                        <Grid size={{ xs: 12, md: 8 }} className="fade-in-up">
                             <Typography variant="h3" component="h1" fontWeight="bold" sx={{ mb: 1 }}>
                                 {apartment.unitName}
                             </Typography>
@@ -92,25 +95,35 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
                             <Typography variant="h5" fontWeight="bold" gutterBottom>
                                 Description
                             </Typography>
+
                             <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
                                 {apartment.description}
                             </Typography>
                         </Grid>
 
-
-                        {/* Right Column */}
-                        <Grid size={{ xs: 12, md: 4 }} >
+                        {/* RIGHT COLUMN */}
+                        <Grid size={{ xs: 12, md: 4 }} className="fade-in-left">
                             <Paper
                                 variant="outlined"
-                                sx={{ p: 3, borderRadius: 3, bgcolor: "background.default", display: 'flex', flexDirection: 'column', alignItems: 'center', }}
+                                sx={{
+                                    p: 3,
+                                    borderRadius: 3,
+                                    bgcolor: "background.default",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                }}
                             >
                                 <Typography variant="h4" color="primary" fontWeight="bold" textAlign="center">
                                     ${apartment.price}
                                 </Typography>
+
                                 <Divider sx={{ my: 2, width: "80%", borderColor: "grey.400" }} />
+
                                 <Chip label="Available Now" color="primary" sx={{ color: "white" }} />
                             </Paper>
                         </Grid>
+
                     </Grid>
                 </Box>
             </Paper>

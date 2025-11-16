@@ -42,7 +42,4 @@ export class CreateApartmentDto {
   @IsOptional()
   images?: string[];
 
-  @IsString()
-  @IsOptional()
-  file?: string;
 }
