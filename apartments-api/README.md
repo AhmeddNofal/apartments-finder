@@ -1,7 +1,6 @@
 
-"""
-Apartments API
-"""
+## Apartments API
+
 
 Comprehensive REST API for managing apartment listings and images. Built with NestJS and Mongoose, this service supports CRUD operations, image storage via MongoDB GridFS, advanced filtering, range queries, search across fields, and pagination.
 
@@ -24,11 +23,7 @@ Comprehensive REST API for managing apartment listings and images. Built with Ne
   - Example Requests (curl)
 - Data Model
 - Seed Data
-- Testing
 - Deployment Notes
-- Troubleshooting
-- Contributing
-- License
 
 ---
 
