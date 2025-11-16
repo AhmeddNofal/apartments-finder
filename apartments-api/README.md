@@ -266,19 +266,7 @@ If you use the seeder, ensure `assets/apartment1.jpg` and `assets/apartment2.jpg
 
 ## Swagger / API Docs
 
-The controllers are annotated with Swagger decorators (`@ApiTags`, `@ApiOperation`, etc.). If you want a live OpenAPI UI, register Swagger in `main.ts`:
+The controllers are annotated with Swagger decorators (`@ApiTags`, `@ApiOperation`, etc.).
 
-```ts
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-
-const config = new DocumentBuilder()
-  .setTitle('Apartments API')
-  .setDescription('API for apartment listings with images, filtering and pagination')
-  .setVersion('1.0')
-  .build();
-const document = SwaggerModule.createDocument(app, config);
-SwaggerModule.setup('api', app, document);
-```
-
-After adding the above and starting the server, visit `http://localhost:3000/api` to see interactive docs.
+After starting the server, visit `http://localhost:3000/api` to see interactive docs.
 
