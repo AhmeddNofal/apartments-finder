@@ -31,6 +31,7 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
 
         if (!res.ok) {
             errorMessage = `Apartment not found (status: ${res.status})`;
+            error = true;
         } else {
             apartment = await res.json();
         }
