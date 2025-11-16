@@ -243,26 +243,10 @@ Indexes:
 
 ## Seed Data
 
-There is a helper method `seedIfEmpty()` inside the `ApartmentsService` that will populate the database with example apartments if none exist. The service reads two image files from `assets/` and uploads them to GridFS. To use the seeder you can call it from the application bootstrap or a one-off script.
-
-Example (quick script inside `main.ts` bootstrap):
-
-```ts
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const apartmentsService = app.get(ApartmentsService);
-  await apartmentsService.seedIfEmpty();
-  await app.listen(process.env.PORT || 3000);
-}
-bootstrap();
-```
+There is a helper method `seedIfEmpty()` inside the `ApartmentsService` that will populate the database with example apartments if none exist. The service reads two image files from `assets/` and uploads them to GridFS.
 
 If you use the seeder, ensure `assets/apartment1.jpg` and `assets/apartment2.jpg` exist in the project root (or update the paths accordingly).
 
-## Testing
-
-- Unit / e2e tests are not included by default in this repository snapshot. Add tests under `test/` and use Nest's `TestingModule` helpers for unit/e2e tests.
-- For basic manual testing use `curl` or Postman to exercise the endpoints described above.
 
 ## Swagger / API Docs
 
