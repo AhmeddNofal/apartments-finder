@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Types } from 'mongoose';
@@ -9,6 +9,8 @@ import { UpdateApartmentDto } from './dto/update-apartment.dto';
 import { QueryApartmentDto } from './dto/query-apartment.dto';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { ApartmentsPaginatedResult } from './types/ApartmentsPaginatedResult ';
 
 @Injectable()
 export class ApartmentsService {
@@ -17,7 +19,8 @@ export class ApartmentsService {
 
     constructor(
         private readonly gridfs: GridFsService,
-        @InjectModel(Apartment.name) private apartmentModel: Model<ApartmentDocument>
+        @InjectModel(Apartment.name) private apartmentModel: Model<ApartmentDocument>,
+        @Inject(CACHE_MANAGER) private cacheManager: Cache,
     ) {
         this.bucket = this.gridfs.getBucket();
     }
@@ -81,6 +84,9 @@ export class ApartmentsService {
             }
 
             const apartment = new this.apartmentModel(apartmentData);
+
+            await this.cacheManager.clear();
+
             return apartment.save();
         }
         catch (error) {
@@ -91,6 +97,14 @@ export class ApartmentsService {
 
     async findAll(query: QueryApartmentDto): Promise<{ data: ApartmentDocument[]; total: number; page: number; limit: number; totalPages: number }> {
         const { page = 1, limit = 10, search, minPrice, maxPrice, bedrooms, baths, minArea, maxArea, unitNo } = query;
+
+        const cacheKey = `apartments:${JSON.stringify(query)}`;
+
+        // 1. Try reading from cache
+        const cached = await this.cacheManager.get<ApartmentsPaginatedResult>(cacheKey);
+        if (cached) {
+            return cached;
+        }
 
         // Build filter object
         const filter: any = {};
@@ -147,14 +161,25 @@ export class ApartmentsService {
 
         const totalPages = Math.ceil(total / limit);
 
-        return { data, total, page, limit, totalPages };
+        const res = { data, total, page, limit, totalPages };
+        await this.cacheManager.set(cacheKey, res);
+
+        return res;
     }
 
     async findOne(id: string): Promise<ApartmentDocument> {
+
+        const cacheKey = `apartment:${id}`;
+        const cached = await this.cacheManager.get<ApartmentDocument>(cacheKey);
+        if (cached) return cached;
+
         const apartment = await this.apartmentModel.findById(id).exec();
         if (!apartment) {
             throw new NotFoundException(`Apartment with ID ${id} not found`);
         }
+
+        await this.cacheManager.set(cacheKey, apartment);
+
         return apartment;
     }
 
@@ -194,6 +219,8 @@ export class ApartmentsService {
             throw new NotFoundException(`Apartment with ID ${id} not found`);
         }
 
+        await this.cacheManager.clear();
+
         return updatedApartment;
     }
 
@@ -219,6 +246,8 @@ export class ApartmentsService {
 
         // Delete the apartment document
         await this.apartmentModel.findByIdAndDelete(id).exec();
+
+        await this.cacheManager.clear();
 
         return { message: `Apartment with ID ${id} and its images deleted successfully` };
     }
@@ -274,9 +303,14 @@ export class ApartmentsService {
             },
         ];
 
+        await this.cacheManager.clear();
+
         for (const apt of dummyApartments) {
             await this.create(apt);
             console.log(`Seeded apartment: ${apt.unitName}`);
         }
+
     }
+
+
 }
