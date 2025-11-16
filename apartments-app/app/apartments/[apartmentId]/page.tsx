@@ -56,7 +56,7 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
 
     const images =
         apartment!.images?.length
-            ? apartment!.images.map(id => `${baseUrl}/apartments/file/${id}`)
+            ? apartment!.images.map(id => `http://localhost:5000/apartments/file/${id}`)
             : ["/placeholder.png"];
 
     return (
