@@ -257,10 +257,6 @@ bootstrap();
 
 If you use the seeder, ensure `assets/apartment1.jpg` and `assets/apartment2.jpg` exist in the project root (or update the paths accordingly).
 
-## Testing
-
-- Unit / e2e tests are not included by default in this repository snapshot. Add tests under `test/` and use Nest's `TestingModule` helpers for unit/e2e tests.
-- For basic manual testing use `curl` or Postman to exercise the endpoints described above.
 
 ## Swagger / API Docs
 
