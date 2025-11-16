@@ -167,7 +167,7 @@ Response: `200 OK` with JSON containing `{ data: [...], total, page, limit, tota
 Example:
 
 ```bash
-curl "http://localhost:3000/apartments?search=sea&minPrice=100000&maxPrice=300000&page=1&limit=10"
+curl "http://localhost:5000/apartments?search=sea&minPrice=100000&maxPrice=300000&page=1&limit=10"
 ```
 
 ### Get apartment by ID
@@ -191,7 +191,7 @@ Behavior:
 Example (curl):
 
 ```bash
-curl -X PATCH "http://localhost:3000/apartments/654d2a1234567890abcdef12" \
+curl -X PATCH "http://localhost:5000/apartments/654d2a1234567890abcdef12" \
   -F 'bedrooms=4' \
   -F 'price=300000' \
   -F "files=@/path/to/new-image.jpg"
@@ -213,7 +213,7 @@ curl -X PATCH "http://localhost:3000/apartments/654d2a1234567890abcdef12" \
 Example:
 
 ```bash
-curl "http://localhost:3000/apartments/file/655a9c1234567890abcdef34" --output apartment-image.jpg
+curl "http://localhost:5000/apartments/file/655a9c1234567890abcdef34" --output apartment-image.jpg
 ```
 
 ## Data Model
@@ -247,5 +247,5 @@ If you use the seeder, ensure `assets/apartment1.jpg` and `assets/apartment2.jpg
 
 The controllers are annotated with Swagger decorators (`@ApiTags`, `@ApiOperation`, etc.).
 
-After starting the server, visit `http://localhost:3000/api` to see interactive docs.
+After starting the server, visit `http://localhost:5000/api` to see interactive docs.
 
