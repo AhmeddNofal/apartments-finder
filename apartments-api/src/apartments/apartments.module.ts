@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ApartmentsController } from './apartments.controller';
 import { ApartmentsService } from './apartments.service';
@@ -14,4 +14,10 @@ import { GridFsModule } from 'src/grid-fs/grid-fs.module';
   controllers: [ApartmentsController],
   providers: [ApartmentsService, GridFsService]
 })
-export class ApartmentsModule { }
+export class ApartmentsModule implements OnModuleInit {
+  constructor(private readonly apartmentsService: ApartmentsService) { }
+
+  async onModuleInit() {
+    await this.apartmentsService.seedIfEmpty();
+  }
+}

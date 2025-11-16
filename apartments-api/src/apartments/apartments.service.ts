@@ -7,6 +7,8 @@ import { Apartment, ApartmentDocument } from './schemas/apartment.schema';
 import { CreateApartmentDto } from './dto/create-apartment.dto';
 import { UpdateApartmentDto } from './dto/update-apartment.dto';
 import { QueryApartmentDto } from './dto/query-apartment.dto';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class ApartmentsService {
@@ -205,5 +207,61 @@ export class ApartmentsService {
         }
 
         return { message: `Apartment with ID ${id} deleted successfully` };
+    }
+
+    async seedIfEmpty() {
+        const count = await this.apartmentModel.countDocuments().exec();
+        if (count > 0) return;
+
+        const imageFiles: Express.Multer.File[] = ['apartment1.jpg', 'apartment2.jpg'].map(filename => {
+            const buffer = readFileSync(join(process.cwd(), 'assets', filename));
+            return {
+                originalname: filename,
+                buffer,
+            } as Express.Multer.File;
+        });
+
+        const uploadedImageIds = await this.uploadFiles(imageFiles);
+
+        const dummyApartments = [
+            {
+                unitName: 'Sea View Apartment',
+                unitNo: 101,
+                bedrooms: 2,
+                baths: 1,
+                unitArea: 90,
+                price: 120000,
+                address: '123 Beach Road, Miami',
+                description: 'Beautiful apartment with ocean view.',
+                images: uploadedImageIds,
+            },
+            {
+                unitName: 'City Center Loft',
+                unitNo: 202,
+                bedrooms: 3,
+                baths: 2,
+                unitArea: 130,
+                price: 250000,
+                address: '456 Downtown St, New York',
+                description: 'Spacious loft in the heart of the city.',
+                images: [],
+            },
+            {
+                unitName: 'Mountain Cabin',
+                unitNo: 303,
+                bedrooms: 4,
+                baths: 3,
+                unitArea: 180,
+                price: 300000,
+                address: '789 Mountain Lane, Colorado',
+                description: 'Cozy cabin surrounded by nature.',
+                images: [],
+            },
+        ];
+
+        for (const apt of dummyApartments) {
+            await this.create(apt);
+            console.log(`Seeded apartment: ${apt.unitName}`);
+        }
     }
 }
