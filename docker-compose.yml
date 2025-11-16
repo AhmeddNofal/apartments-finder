@@ -25,8 +25,6 @@ services:
     build: ./apartments-app
     container_name: apartments-frontend
     restart: always
-    environment:
-      NEXT_PUBLIC_API_URL: "http://localhost:5000"
     depends_on:
       - backend
     ports:
