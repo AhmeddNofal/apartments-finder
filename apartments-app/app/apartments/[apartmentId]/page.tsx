@@ -23,6 +23,7 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
     let apartment: Apartment | null = null;
+    let error = false;
     let errorMessage = '';
 
     try {
@@ -36,9 +37,10 @@ export default async function ApartmentDetails({ params }: { params: Promise<{ a
     } catch (err: any) {
         console.error(err);
         errorMessage = 'Failed to fetch apartment data. Please try again later.';
+        error = true;
     }
 
-    if (errorMessage) {
+    if (error) {
         return (
             <Container maxWidth="lg" sx={{ py: 6 }}>
                 <Alert severity="error">{errorMessage}</Alert>
