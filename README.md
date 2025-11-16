@@ -1,4 +1,4 @@
-# Apartments Finder (monorepo)
+# Apartments Finder
 
 A concise repo-level overview and quickstart for the Apartments Finder project. This repository contains two main sub-projects:
 
