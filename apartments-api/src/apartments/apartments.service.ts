@@ -198,16 +198,31 @@ export class ApartmentsService {
     }
 
 
-
     async remove(id: string): Promise<{ message: string }> {
-        const apartment = await this.apartmentModel.findByIdAndDelete(id).exec();
+        const apartment = await this.apartmentModel.findById(id).exec();
 
         if (!apartment) {
             throw new NotFoundException(`Apartment with ID ${id} not found`);
         }
 
-        return { message: `Apartment with ID ${id} deleted successfully` };
+        // Delete images from GridFS
+        if (apartment.images && apartment.images.length > 0) {
+            for (const fileId of apartment.images) {
+                try {
+                    await this.bucket.delete(new Types.ObjectId(fileId));
+                } catch (err) {
+                    // If the file is not found, just log it
+                    console.warn(`Failed to delete image ${fileId}: ${err.message}`);
+                }
+            }
+        }
+
+        // Delete the apartment document
+        await this.apartmentModel.findByIdAndDelete(id).exec();
+
+        return { message: `Apartment with ID ${id} and its images deleted successfully` };
     }
+
 
     async seedIfEmpty() {
         const count = await this.apartmentModel.countDocuments().exec();
